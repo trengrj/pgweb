@@ -361,17 +361,16 @@ function updatePaginator(pagination) {
   else {
     $(".prev-page").prop("disabled", "disabled");
   }
+  $(".next-page").prop("disabled", "");
 
-  if (pagination.pages_count > 1 && pagination.page < pagination.pages_count) {
-    $(".next-page").prop("disabled", "");
-  }
-  else {
-    $(".next-page").prop("disabled", "disabled");
-  }
-
-  $("#total_records").text(pagination.rows_count);
+ if (pagination.rows_count == 0) {
+   $("#total_records").text("");
+ }
+ else {
+  $("#total_records").text("estimated "+pagination.rows_count + " rows");
+ }
   if (pagination.pages_count == 0) pagination.pages_count = 1;
-  $("button.page").text(pagination.page + " of " + pagination.pages_count);
+  $("button.page").text("Page " + pagination.page);//" + pagination.pages_count);
 }
 
 function showTableContent(sortColumn, sortOrder) {
@@ -846,16 +845,16 @@ $(document).ready(function() {
 
   $("#pagination .next-page").on("click", function() {
     var current = $(".current-page").data("page");
-    var total   = $(".current-page").data("pages");
+//    var total   = $(".current-page").data("pages");
 
-    if (total > current) {
+ //   if (total > current) {
       $(".current-page").data("page", current + 1);
       showTableContent();
 
       if (current + 1 == total) {
         $(this).prop("disabled", "disabled");
       }
-    }
+//    }
 
     if (current > 1) {
       $(".prev-page").prop("disabled", "");

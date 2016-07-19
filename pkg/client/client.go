@@ -172,13 +172,14 @@ func (client *Client) TableRows(table string, opts RowsOptions) (*Result, error)
 	return client.query(sql)
 }
 
+// Have changed to only show estimated count as otherwise this will hang the application
 func (client *Client) TableRowsCount(table string, opts RowsOptions) (*Result, error) {
 	schema, table := getSchemaAndTable(table)
-	sql := fmt.Sprintf(`SELECT COUNT(1) FROM "%s"."%s"`, schema, table)
+	sql := fmt.Sprintf(`SELECT c.reltuples::bigint AS count FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE  c.relname = '%s' AND n.nspname = '%s'`, table, schema)
 
-	if opts.Where != "" {
-		sql += fmt.Sprintf(" WHERE %s", opts.Where)
-	}
+	//if opts.Where != "" {
+	//		sql += fmt.Sprintf(" WHERE %s", opts.Where)
+	//}
 
 	return client.query(sql)
 }
